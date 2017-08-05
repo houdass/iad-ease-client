@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let conversation of conversations" (click)="goToConversation(conversation._id)">
+      <ion-avatar item-left>
+        <img src="./assets/to-user.jpg">
+      </ion-avatar>
+      <h2>{{ getRecipientName(conversation.messages) }}</h2>
+      <p>{{ conversation.messages[0].message }}</p>
+    </ion-item>
+  </ion-list>
+</ion-content>
