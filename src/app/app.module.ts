@@ -5,12 +5,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { App } from './app.component';
-// import { AboutPageModule } from '../pages/about/about.module';
-import { ChatPageModule } from '../pages/chat/chat.module';
-import { ContactPageModule } from '../pages/contact/contact.module';
-import { HomePageModule } from '../pages/home/home.module';
+
+// Pages
 import { LoginPageModule } from '../pages/login/login.module';
+import { HomePageModule } from '../pages/home/home.module';
+import { ChatPageModule } from '../pages/chat/chat.module';
 import { TabsPageModule } from '../pages/tabs/tabs.module';
+import { AboutPageModule } from '../pages/about/about.module';
 import { MapPageModule } from '../pages/map/map.module';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -38,10 +39,11 @@ export function httpFactory(xhrBackend: XHRBackend,
       tabsHideOnSubPages: true,
       tabsLayout: 'icon-left'
     }),
-    HomePageModule,
     LoginPageModule,
-    TabsPageModule,
+    HomePageModule,
     ChatPageModule,
+    TabsPageModule,
+    AboutPageModule,
     MapPageModule
   ],
   bootstrap: [IonicApp],
@@ -51,8 +53,10 @@ export function httpFactory(xhrBackend: XHRBackend,
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
     EmojiProvider,
+    {
+      provide: ErrorHandler,
+      useClass: IonicErrorHandler },
     {
       provide: Http,
       useFactory: httpFactory,

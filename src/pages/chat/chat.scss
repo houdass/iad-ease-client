@@ -17,6 +17,13 @@ page-chat {
     white-space: pre-line;
   }
 
+  .is-typing {
+    position: relative;
+    bottom: 5px;
+    width: 17px;
+    border-radius: 50%;
+  }
+
   .input-wrap{
     ion-textarea {
       position: static;
@@ -54,14 +61,6 @@ page-chat {
         box-shadow: 0 0 2px rgba(0, 0, 0, 0.36);
         position: absolute;
         top: 20px;
-      }
-
-      .isTyping {
-        img {
-          position: relative;
-          bottom: 7px;
-          width: 3px;
-        }
       }
 
       .msg-detail{
@@ -150,10 +149,6 @@ page-chat {
           top: 12px;
         }
       }
-
     }
-
   }
-
-
 }

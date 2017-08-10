@@ -1,135 +1,132 @@
-import { Injectable } from "@angular/core";
-import { ResourceConstants } from "../../../constants/resource.constants";
-import { OrganizationConstants } from "../../../constants/organization.constants";
-import { SessionConstants } from "../../../constants/session.constants";
-import { Resource } from "./Resource";
+import { Injectable } from '@angular/core';
+import { Resource } from './Resource';
+import { ResourceConstants } from '../../../constants/resource.constants';
+import { OrganizationConstants } from '../../../constants/organization.constants';
+import { SessionConstants } from '../../../constants/session.constants';
 
 @Injectable()
 export class SessionDataService {
+  data: any;
+  permissions: any;
+  organization: any;
+  role: any;
+  operations: any;
 
-    data: any;
-    permissions: any;
-    organization: any;
-    role: any;
-    operations: any;
+  constructor() {}
 
-    constructor(public resourceConstants: ResourceConstants,
-                public organizationConstants: OrganizationConstants,
-                public sessionConstants: SessionConstants) {}
-
-    create(data: any) {
-        if (data) {
-            this.data = data;
-            this.permissions = data.user.permissions;
-            // this.organization = data.user.permissionModel.organization;
-            this.role = data.user.role;
-        }
+  create(data: any) {
+    if (data) {
+      this.data = data;
+      this.permissions = data.user.permissions;
+      // this.organization = data.user.permissionModel.organization;
+      this.role = data.user.role;
     }
+  }
 
-    clear() {
-        if (localStorage) {
-            this.data = null;
-            this.permissions = null;
-            this.organization = null;
-            this.role = null;
-            localStorage.removeItem(this.sessionConstants.SESSION);
-            localStorage.removeItem(this.sessionConstants.TOKEN);
-        }
+  clear() {
+    if (localStorage) {
+      this.data = null;
+      this.permissions = null;
+      this.organization = null;
+      this.role = null;
+      localStorage.removeItem(SessionConstants.SESSION);
+      localStorage.removeItem(SessionConstants.TOKEN);
     }
+  }
 
-    operationAllowed(operation: any) {
-        return this.operations.indexOf(operation) !== -1;
+  operationAllowed(operation: any) {
+    return this.operations.indexOf(operation) !== -1;
+  }
+
+  getResource(resource: any) {
+    return this.permissions.resources[resource] ?
+      new Resource(this.permissions.resources[resource]) : null;
+  }
+
+  // organization
+  hasOrganization(organization: string) {
+    return (this.organization === organization);
+  }
+
+  hasAnyOrganization(organizations: any[]) {
+    for (let i = 0; i < organizations.length; i++) {
+      if (this.hasOrganization(organizations[i])) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    getResource(resource: any) {
-        return this.permissions.resources[resource] ? new Resource(this.permissions.resources[resource]) : null;
+  hasRole(role: string) {
+    return this.permissions.role.label === role;
+  }
+
+  hasAnyRole(roles: any[]) {
+    for (var i = 0; i < roles.length; i++) {
+      if (this.hasRole(roles[i])) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    // organization
-    hasOrganization(organization: string) {
-        return (this.organization === organization);
+  getRoleRank() {
+    return this.permissions.role.rank;
+  }
+
+  hasResource(resource: any) {
+    return this.permissions.resources[resource] !== undefined;
+  }
+
+  hasAnyResource(resources: any[]) {
+    for (let i = 0; i < resources.length; i++) {
+      if (this.hasResource(resources[i])) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    hasAnyOrganization(organizations: any[]) {
-        for (var i = 0; i < organizations.length; i++) {
-            if (this.hasOrganization(organizations[i])) {
-                return true;
-            }
-        }
-        return false;
-    }
+  getName() {
+    return this.data.user.firstname + ' ' + this.data.user.lastname;
+  }
 
-    hasRole(role: string) {
-        return this.permissions.role.label === role;
-    }
+  getRoleLabel() {
+    return this.role.label;
+  }
 
-    hasAnyRole(roles: any[]) {
-        for (var i = 0; i < roles.length; i++) {
-            if (this.hasRole(roles[i])) {
-                return true;
-            }
-        }
-        return false;
-    }
+  getUserDetails() {
+    return this.data.user.details;
+  }
 
-    getRoleRank() {
-        return this.permissions.role.rank;
-    }
+  isClearingAgent() {
+    return this.hasOrganization(OrganizationConstants.CLEARINGAGENT);
+  }
 
-    hasResource(resource: any) {
-        return this.permissions.resources[resource] !== undefined;
-    }
+  isEconomicOperator() {
+    return this.hasOrganization(OrganizationConstants.ECONOMICOPERATOR);
+  }
 
-    hasAnyResource(resources: any[]) {
-        for (var i = 0; i < resources.length; i++) {
-            if (this.hasResource(resources[i])) {
-                return true;
-            }
-        }
-        return false;
-    }
+  isMinistry() {
+    return this.hasOrganization(OrganizationConstants.MINISTRY);
+  }
 
-    getName() {
-        return this.data.user.firstname + ' ' + this.data.user.lastname;
-    }
+  canGenerateAuthorizations() {
+    return this.hasResource(ResourceConstants.BTN_GENERATE_AUTHORIZATION);
+  }
 
-    getRoleLabel() {
-        return this.role.label;
-    }
+  canViewESafe() {
+    return this.getResource(ResourceConstants.ESAFE_VIEW_EDIT) &&
+      this.getResource(ResourceConstants.ESAFE_VIEW_EDIT).operationAllowed('READ');
+  }
 
-    getUserDetails() {
-        return this.data.user.details;
-    }
+  getId() {
+    const session = JSON.parse(localStorage.getItem('session'));
+    return session._id;
+  }
 
-    isClearingAgent() {
-        return this.hasOrganization(this.organizationConstants.CLEARINGAGENT);
-    }
-
-    isEconomicOperator() {
-        return this.hasOrganization(this.organizationConstants.ECONOMICOPERATOR);
-    }
-
-    isMinistry() {
-        return this.hasOrganization(this.organizationConstants.MINISTRY);
-    }
-
-    canGenerateAuthorizations() {
-        return this.hasResource(this.resourceConstants.BTN_GENERATE_AUTHORIZATION);
-    }
-
-    canViewESafe() {
-        return this.getResource(this.resourceConstants.ESAFE_VIEW_EDIT) &&
-            this.getResource(this.resourceConstants.ESAFE_VIEW_EDIT).operationAllowed('READ');
-    }
-
-    getId() {
-        const session = JSON.parse(localStorage.getItem('session'));
-        return session._id;
-    }
-
-    getToken() {
-        return JSON.parse(localStorage.getItem('token'));
-    }
-
+  getToken() {
+    return JSON.parse(localStorage.getItem('token'));
+  }
 }
 

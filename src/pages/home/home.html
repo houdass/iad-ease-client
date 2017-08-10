@@ -6,7 +6,7 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let conversation of conversations" (click)="goToConversation(conversation._id)">
+    <ion-item *ngFor="let conversation of conversations" (click)="goToConversation(conversation._id, conversation.messages[0].toUser._id)">
       <ion-avatar item-left>
         <img src="./assets/to-user.jpg">
       </ion-avatar>

@@ -9,16 +9,17 @@ import 'rxjs/add/operator/toPromise';
 export class LoginService {
 
   constructor(
-      public http: Http,
-      public events: Events) {
+    public http: Http,
+    public events: Events) {
   }
 
   login(credentials): Promise<User> {
-      const url = "/auth/login";
+    const url = '/auth/login';
 
-      return this.http.post(url, credentials)
-          .toPromise()
-          .then(response => response.json()) //response.json().array as ChatMessage[])
-          .catch(err => Promise.reject(err || 'err'));
+    return this.http.post(url, credentials)
+    .toPromise()
+    .then(response => response.json())
+    // response.json().array as ChatMessage[])
+    .catch(err => Promise.reject(err || 'err'));
   }
 }

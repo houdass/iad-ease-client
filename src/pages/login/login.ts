@@ -4,13 +4,13 @@ import { trigger, state, style, animate, transition, keyframes } from '@angular/
 
 import { NavController, IonicPage } from 'ionic-angular';
 
-import { LoginService } from "../../providers/login-service";
-import { SessionService } from "../../components/core/session/session.service";
+import { LoginService } from '../../providers/login-service';
+import { SessionService } from '../../components/core/session/session.service';
 
-import { TabsPage } from "../tabs/tabs";
+import { TabsPage } from '../tabs/tabs';
 
-import "rxjs/add/operator/map";
-import "rxjs/add/operator/catch";
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 
 @IonicPage()
 @Component({
@@ -18,7 +18,7 @@ import "rxjs/add/operator/catch";
   templateUrl: 'login.html',
 
   animations: [
-    //For the logo
+    // For the logo
     trigger('flyInBottomSlow', [
       state('in', style({
         transform: 'translate3d(0,0,0)'
@@ -68,16 +68,14 @@ import "rxjs/add/operator/catch";
 })
 export class LoginPage {
 
-  logoState: any = "in";
-  cloudState: any = "in";
-  loginState: any = "in";
-  formState: any = "in";
+  logoState: any = 'in';
+  loginState: any = 'in';
+  formState: any = 'in';
   user: any = {};
 
   constructor(public navCtrl: NavController,
               public loginService: LoginService,
-              public sessionService: SessionService) {
-  }
+              public sessionService: SessionService) {}
 
   onSubmit() {
     if (this.user.email === '' || this.user.password === '') {
@@ -103,5 +101,4 @@ export class LoginPage {
   showError(error?: any) {
     // console.log('Oops!', 'Login ou mot de passe incorrect', error);
   }
-
 }

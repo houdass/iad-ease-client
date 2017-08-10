@@ -35,8 +35,8 @@
         </div>
       </div>
     </div>
-    <div class="isTyping" *ngIf="isTyping">
-      <img class="user-img" src="../../assets/user.jpg" class="left" width="20"/>
+    <div *ngIf="isTyping">
+      <img class="is-typing left" src="../../assets/user.jpg" />
       <ion-spinner name="dots"></ion-spinner>
     </div>
 
@@ -44,7 +44,7 @@
 
 </ion-content>
 
-<ion-footer no-border [style.height]="_isOpenEmojiPicker ? '255px' : '55px'">
+<ion-footer no-border [style.height]="isOpenEmojiPicker ? '255px' : '55px'">
   <ion-grid class="input-wrap">
     <ion-row>
 
@@ -61,7 +61,7 @@
                 [(ngModel)]="editorMsg"
                 (keyup.enter)="sendMsg()"
                 (keyup)="typing()"
-                (focus)="_focus()">
+                (focus)="focus()">
         </ion-textarea>
       </ion-col>
       <ion-col col-2>
@@ -72,5 +72,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <emoji-picker *ngIf="_isOpenEmojiPicker" [(ngModel)]="editorMsg"></emoji-picker>
+  <emoji-picker *ngIf="isOpenEmojiPicker" [(ngModel)]="editorMsg"></emoji-picker>
 </ion-footer>

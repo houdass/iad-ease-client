@@ -27,9 +27,8 @@ export class MapPage {
       center: latLng,
       zoom: 15,
       mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
+    };
 
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOpts);
   }
-
 }

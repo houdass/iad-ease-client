@@ -1,12 +1,10 @@
 import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Events, Content, TextInput } from 'ionic-angular';
+import { IonicPage, NavParams, Events, Content, TextInput } from 'ionic-angular';
 import * as io from 'socket.io-client';
 import { isEqual } from 'lodash';
 
 import { ChatService } from '../../providers/chat-service';
 import { SessionDataService } from '../../components/core/session/session-data.service';
-import { Message } from '../../models/Message';
 
 @IonicPage()
 @Component({
@@ -21,41 +19,42 @@ export class ChatPage {
   messages: any;
   conversation: any;
   userId: string;
-  userName: string;
-  userAvatar: string;
   toUserId: string ;
   toUserName: string ;
   editorMsg: string = '';
-  _isOpenEmojiPicker = false;
+  isOpenEmojiPicker = false;
   socket: any = io('http://localhost:8000');
-  idConversation: String;
+  conversationId: String;
+  recipientId: String;
   isTyping: boolean;
 
   constructor(
-    public navCtrl: NavController,
     public navParams: NavParams,
     public chatService: ChatService,
     public events: Events,
     public ref: ChangeDetectorRef,
-    public sessionDataService: SessionDataService
-  ) {
+    public sessionDataService: SessionDataService) {}
 
-    this.idConversation = this.navParams.get('idConversation');
+  ionViewWillLeave() {
+    this.socket.emit('leave conversation', this.conversationId);
+    this.socket.emit('leave notify list contacts', this.recipientId);
+  }
+
+  ionViewDidEnter() {
+    this.conversationId = this.navParams.get('conversationId');
+    this.recipientId = this.navParams.get('recipientId');
     this.userId = this.sessionDataService.getId();
 
-    // Get mock user information
-    // this.chatService.getUserInfo()
-    // .then((res) => {
-    // this.userId = res.id;
-    // this.userName = res.name;
-    // this.userAvatar = res.avatar;
-    //   });
+    this.socket.emit('enter conversation', this.conversationId);
+    this.socket.emit('notify list contacts', this.recipientId);
 
-    this.socket.emit('enter conversation', this.idConversation);
+    this.getMsg();
+    this.scrollToBottom();
 
     // Listen for refresh messages from socket server
     this.socket.on('refresh messages', (data) => {
       this.getMsg();
+      this.scrollToBottom();
     });
 
     // Listen for refresh messages from socket server
@@ -64,38 +63,15 @@ export class ChatPage {
     });
   }
 
-  ionViewDidLoad() {
-    // this.switchEmojiPicker();
-  }
-
-  ionViewWillLeave() {
-    // unsubscribe
-    this.events.unsubscribe('chat:received');
-
-  }
-
-  ionViewDidEnter() {
-    // get message list
-    this.getMsg()
-    .then(() => {
-      this.scrollToBottom();
-    });
-
-    // Subscribe to received  new message events
-    this.events.subscribe('chat:received', (msg, time) => {
-      this.pushNewMsg(msg);
-    });
-  }
-
-  _focus() {
-    this._isOpenEmojiPicker = false;
+  focus() {
+    this.isOpenEmojiPicker = false;
     this.content.resize();
     this.scrollToBottom();
   }
 
   switchEmojiPicker() {
-    this._isOpenEmojiPicker = !this._isOpenEmojiPicker;
-    if (!this._isOpenEmojiPicker) {
+    this.isOpenEmojiPicker = !this.isOpenEmojiPicker;
+    if (!this.isOpenEmojiPicker) {
       this.messageInput.setFocus();
     }
     this.content.resize();
@@ -108,15 +84,15 @@ export class ChatPage {
    */
   getMsg() {
     return this.chatService
-    .getConversationById(this.idConversation)
-    .then(response => {
+    .getConversationById(this.conversationId)
+    .then((response) => {
       this.conversation = response;
-      // this.toUserId = isEqual(this.conversation.participants[0], this.userId) ? this.conversation.participants[1] : this.userId
-      this.toUserId = this.conversation.participants.indexOf(this.userId) === 0 ? this.conversation.participants[1] : this.conversation.participants[0];
+      this.toUserId = this.conversation.participants.indexOf(this.userId) === 0 ?
+        this.conversation.participants[1] : this.conversation.participants[0];
       this.toUserName = this.getRecipientName(this.conversation.messages);
       this.messages = response.messages;
     })
-    .catch(err => {
+    .catch((err) => {
       // console.log(err);
     });
   }
@@ -136,49 +112,32 @@ export class ChatPage {
     if (!this.editorMsg.trim()) {
       return;
     }
-    let newMsg: any = {
+    const newMsg: any = {
       message: this.editorMsg
     };
-
-    this.pushNewMsg(newMsg);
     this.chatService
     .sendMessage(this.toUserId, newMsg)
-    .then(response => {
-      this.socket.emit('new message', this.idConversation);
+    .then((response) => {
+      this.socket.emit('new message', this.conversationId);
+      this.socket.emit('notify him', this.recipientId);
+
       this.editorMsg = '';
+      this.typing();
     })
-    .catch(err => {
+    .catch((err) => {
       // console.log(err);
     });
 
-    if (!this._isOpenEmojiPicker) {
+    if (!this.isOpenEmojiPicker) {
       this.messageInput.setFocus();
     }
-  }
-
-  /**
-   * @name pushNewMsg
-   * @param msg
-   */
-  pushNewMsg(msg: Message) {
-    // Verify user relationships
-    /* if(msg.userId === this.userId &&  msg.toUserId === this.toUserId){
-     this.msgList.push(msg);
-     }else if (msg.toUserId === this.userId && msg.userId === this.toUserId){
-     this.msgList.push(msg);
-     }
-     this.scrollToBottom(); */
-  }
-
-  getMsgIndexById(id: string) {
-    // return this.msgList.findIndex( e => e.id === id)
   }
 
   typing() {
     const isTyping = (this.editorMsg !== '');
     const data = {
-      conversation: this.idConversation,
-      isTyping
+      isTyping,
+      conversation: this.conversationId
     };
     this.socket.emit('is typing', data);
   }
