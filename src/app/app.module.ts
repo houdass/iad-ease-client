@@ -19,7 +19,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { EmojiProvider } from '../providers/emoji';
 
 import { HttpInterceptor } from '../config/HttpInterceptor';
-import { SessionDataService } from '../components/core/session/session-data.service';
+import { SessionDataService } from '../core/session/session-data.service';
 
 export function httpFactory(xhrBackend: XHRBackend,
                             requestOptions: RequestOptions,

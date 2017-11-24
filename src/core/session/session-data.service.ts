@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Resource } from './Resource';
-import { ResourceConstants } from '../../../constants/resource.constants';
-import { OrganizationConstants } from '../../../constants/organization.constants';
-import { SessionConstants } from '../../../constants/session.constants';
+import { ResourceConstants } from '../../constants/resource.constants';
+import { OrganizationConstants } from '../../constants/organization.constants';
+import { SessionConstants } from '../../constants/session.constants';
 
 @Injectable()
 export class SessionDataService {

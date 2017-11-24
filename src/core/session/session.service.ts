@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SessionDataService } from './session-data.service';
-import { SessionConstants } from '../../../constants/session.constants';
+import { SessionConstants } from '../../constants/session.constants';
 
 @Injectable()
 export class SessionService {

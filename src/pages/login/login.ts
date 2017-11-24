@@ -4,8 +4,8 @@ import { trigger, state, style, animate, transition, keyframes } from '@angular/
 
 import { NavController, IonicPage } from 'ionic-angular';
 
-import { LoginService } from '../../providers/login-service';
-import { SessionService } from '../../components/core/session/session.service';
+import { LoginService } from '../../providers/login.service';
+import { SessionService } from '../../core/session/session.service';
 
 import { TabsPage } from '../tabs/tabs';
 

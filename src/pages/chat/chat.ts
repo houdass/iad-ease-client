@@ -3,8 +3,8 @@ import { IonicPage, NavParams, Events, Content, TextInput } from 'ionic-angular'
 import * as io from 'socket.io-client';
 import { isEqual } from 'lodash';
 
-import { ChatService } from '../../providers/chat-service';
-import { SessionDataService } from '../../components/core/session/session-data.service';
+import { ChatService } from '../../providers/chat.service';
+import { SessionDataService } from '../../core/session/session-data.service';
 
 @IonicPage()
 @Component({

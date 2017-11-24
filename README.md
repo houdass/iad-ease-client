@@ -42,7 +42,7 @@
  │   │   └── emoji-picker.scss
  │   │   └── emoji-picker.ts
  │   ├── providers
- │   │   └── chat-service.ts                  * chat-service
+ │   │   └── chat.service.ts                  * chat-service
  │   │   └── emoji.ts                         * emoji-provider
  │   ├── pipes
  │   │   └── relative-time.ts                 * relative time pipes

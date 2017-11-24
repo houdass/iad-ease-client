@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ConnectionBackend, RequestOptions, Request, RequestOptionsArgs, Response, Http, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { AppConfig } from '../constants/app.config';
-import { SessionDataService } from '../components/core/session/session-data.service';
+import { SessionDataService } from '../core/session/session-data.service';
 
 @Injectable()
 export class HttpInterceptor extends Http {

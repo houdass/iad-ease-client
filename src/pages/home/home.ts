@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
 import { NavController, IonicPage } from 'ionic-angular';
-import { ChatService } from '../../providers/chat-service';
+import { ChatService } from '../../providers/chat.service';
+import { UtilService } from '../../providers/util.service';
 import { ChatPage } from '../chat/chat';
 import { isEqual } from 'lodash';
 import * as io from 'socket.io-client';
 
-import { SessionDataService } from '../../components/core/session/session-data.service';
+import { SessionDataService } from '../../core/session/session-data.service';
 
 @IonicPage()
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
+  providers: [UtilService]
 })
 export class HomePage {
 
@@ -21,6 +23,7 @@ export class HomePage {
 
   constructor(public navCtrl: NavController,
               public chatService: ChatService,
+              public utilService: UtilService,
               public sessionDataService: SessionDataService) {}
 
   ionViewWillLeave() {
@@ -28,6 +31,7 @@ export class HomePage {
   }
 
   ionViewDidEnter() {
+    this.utilService.logger('Houdass Youness');
     this.socket.emit('notify list contacts', this.sessionDataService.getId());
     // Listen for refresh messages from socket server
     this.socket.on('notify him now', () => {
